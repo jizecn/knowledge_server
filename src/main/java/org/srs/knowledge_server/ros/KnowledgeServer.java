@@ -10,7 +10,7 @@
  * ROS stack name: NA
  * ROS package name: knowledge_server
  * Description: At the stage, only for testing to validate some functions. 
- *								
+ *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  *
  * @author Ze Ji, email: jiz1@cf.ac.uk
@@ -193,27 +193,41 @@ public class KnowledgeServer
     public static void main(String[] args)
     {
 	String configFile = new String();
-	System.out.print("There are " + args.length + " input arguments: ");
+	String folderName = "";
+	String pkgName = "";
 
-	if(args.length == 1) {
-	    configFile = args[0];
-	    System.out.println(configFile);
+	if(args.length == 2) {
+	    pkgName = args[0];
+	    folderName = args[1];
+	    String[] cmds = {"rospack", "find", pkgName};
+	    try{
+		Runtime rt = Runtime.getRuntime();
+		Process res = rt.exec(cmds);
+		InputStream is = res.getInputStream();
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new BufferedReader(isr);
+
+		String pkgPath = br.readLine();
+		if(pkgPath == null) {
+		    System.out.println("Package Path is Null. Check package name  ");
+		}
+		else {
+		    pkgPath = pkgPath + "/" + folderName;
+		    System.out.println("Load owl from: " + pkgPath);
+		}
+	    }
+	    catch(Throwable t) {
+		t.printStackTrace();
+	    }
 	}
 	else {
-	    configFile = "srsknow.cfg";
-	    System.out.println(configFile);
+	    System.out.println("rosrun knowledge_server pkg_name owl_folder_name");
+	    System.exit(-1);
 	}
 
 	Properties conf = new Properties();
 	KnowledgeServer knowEng = new KnowledgeServer();
 	
-	if (knowEng.init(configFile)) {
-	    System.out.println("OK");
-	
-	}
-	else {
-	    System.out.println("Something wrong with initialisation");
-	}
     }
 
     private String nodeName;
