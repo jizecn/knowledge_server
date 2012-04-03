@@ -63,11 +63,11 @@ import com.hp.hpl.jena.shared.JenaException;
 import ros.*;
 import ros.communication.*;
 import ros.pkg.knowledge_server.srv.QuerySparQL;
-import ros.pkg.knowledge_server.msg.*;
+//import ros.pkg.knowledge_server.msg.*;
 
 import com.hp.hpl.jena.rdf.model.Statement;
 import org.srs.knowledge_server.ontology.*;
-import ros.pkg.geometry_msgs.msg.Pose2D;
+//import ros.pkg.geometry_msgs.msg.Pose2D;
 
 import java.util.Properties;
 
