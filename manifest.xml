@@ -1,0 +1,17 @@
+<package>
+  <description brief="knowledge_server">
+
+     knowledge_server
+
+  </description>
+  <author>Ze Ji</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/knowledge_server</url>
+  <depend package="std_msgs"/>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+
+</package>
+
+
