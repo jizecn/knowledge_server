@@ -5,12 +5,16 @@
 
   </description>
   <author>Ze Ji</author>
-  <license>BSD</license>
+  <license>LGPL</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/knowledge_server</url>
-  <depend package="std_msgs"/>
-  <depend package="rospy"/>
+  <depend package="roslib"/>
+  <depend package="rosjava_jni"/>
   <depend package="roscpp"/>
+  <depend package="rospy"/>
+  <depend package="geometry_msgs"/>
+  <depend package="std_msgs"/>
+  <depend package="srs_pellet"/>
 
 </package>
 
