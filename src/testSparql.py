@@ -14,7 +14,7 @@ def querySparQL():
         queryString = """
         PREFIX srs: <http://www.srs-project.eu/ontologies/srs.owl#>  
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-        PREFIX ipa-kitchen-map: <http://www.srs-project.eu/ontologies/ipa-kitchen-map.owl#> 
+        PREFIX ipa-kitchen: <http://www.srs-project.eu/ontologies/ipa-kitchen.owl#> 
         SELECT ?objs ?x ?y ?z ?w ?h ?l ?id 
         WHERE { 
                     ?objs rdf:type srs:Milkbox . 
@@ -29,6 +29,7 @@ def querySparQL():
         print queryString
         print '----\n'
         resp1 = spql(queryString)
+        print '-----\n'
         return resp1.result
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e

@@ -128,12 +128,29 @@ public class OntologyDB
     public String executeQuery(String queryString)
     {
 	//// new added for test JSON output
-	Query query = QueryFactory.create(queryString);
+	
+	Query query = null; 
+	QueryExecution qe = null;
+	ResultSet results = null;
 
-	QueryExecution qe = QueryExecutionFactory.create(query, model);
-	ResultSet results = qe.execSelect();
-
+	try {
+	    query = QueryFactory.create(queryString);
+	    qe = QueryExecutionFactory.create(query, model);
+	    results = qe.execSelect();
+	}
+	catch(Exception e) {
+	    System.err.println("Query Syntax invalid. \nCaught Exception:  " + e.toString() + "  \n" + e.getMessage());
+	    if(qe != null) {
+		qe.close();
+	    }
+	    return  "";
+	}
+	if (results == null) {
+	    qe.close();
+	    return "";
+	}
 	ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+
 	ResultSetFormatter.outputAsJSON(ostream, results);
 	String r = "";
 	try{
@@ -144,7 +161,6 @@ public class OntologyDB
 	}
 	qe.close();
 	return r;
-
     }
     
     public ArrayList<QuerySolution> executeQueryRaw(String queryString)
@@ -156,6 +172,10 @@ public class OntologyDB
 	ArrayList<QuerySolution> resList = (ArrayList)ResultSetFormatter.toList(results);
 	qe.close();
 	return resList; //results;
+    }
+
+    public boolean executeSparQLRule(String sparQLRule) {
+	return true;
     }
 
     public void reloadOWLFile(String file)

@@ -63,6 +63,7 @@ import com.hp.hpl.jena.shared.JenaException;
 import ros.*;
 import ros.communication.*;
 import ros.pkg.knowledge_server.srv.QuerySparQL;
+import ros.pkg.knowledge_server.srv.SparQLRule;
 
 import com.hp.hpl.jena.rdf.model.Statement;
 import org.srs.knowledge_server.ontology.*;
@@ -113,7 +114,8 @@ public class KnowledgeServer
 	nodeHandle = ros.createNodeHandle();
 
 	try{
-	    initQuerySparQL();
+	    this.initQuerySparQL();
+	    this.initSparQLRule();
 	}
 	catch(RosException e){
 	    System.out.println(e.getMessage());
@@ -176,13 +178,34 @@ public class KnowledgeServer
 	ServiceServer<QuerySparQL.Request, QuerySparQL.Response, QuerySparQL> srv = nodeHandle.advertiseService( querySparQLService , new QuerySparQL(), scb);
     }
 
+    private SparQLRule.Response handleSparQLRule(SparQLRule.Request req)
+    {
+	SparQLRule.Response re = new SparQLRule.Response();
+	String queryString = req.sparQLRule;
+	System.out.println(queryString);
+	re.result = ontoDB.executeSparQLRule(queryString);
+	return re;
+    }
+
+    private void initSparQLRule() throws RosException
+    {
+	ServiceServer.Callback<SparQLRule.Request, SparQLRule.Response> scb = new ServiceServer.Callback<SparQLRule.Request, SparQLRule.Response>() {
+            public SparQLRule.Response call(SparQLRule.Request request) {
+		return handleSparQLRule(request);
+            }
+	};
+
+	ServiceServer<SparQLRule.Request, SparQLRule.Response, SparQLRule> srv = nodeHandle.advertiseService( sparQLRuleService , new SparQLRule(), scb);
+    }
+
+
     private String defaultContextPath()
     {
-    /*
-	this.confPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();	
-	 this.confPath = this.confPath + "../conf/";
-	 return this.confPath;
-    */	 
+	/*
+	  this.confPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();	
+	  this.confPath = this.confPath + "../conf/";
+	  return this.confPath;
+	*/	 
 	return this.confPath;
     }
     
@@ -194,7 +217,6 @@ public class KnowledgeServer
     public static void main(String[] args)
     {
 	String configFile = new String();
-	//String Name = "";
 	String pkgName = "";
 	String pkgPath = "";
 
@@ -242,5 +264,6 @@ public class KnowledgeServer
     private String nodeName;
     private Properties config;
     private String querySparQLService = "query_sparql";
+    private String sparQLRuleService = "sparql_rule";
     private String confPath;
 }
