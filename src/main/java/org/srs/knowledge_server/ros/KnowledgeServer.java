@@ -15,7 +15,7 @@
  *
  * @author Ze Ji, email: jiz1@cf.ac.uk
  *
- * Date of creation: March 2012:
+ * Date of creation: March 2012
  * ToDo: 
  *
  * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -63,11 +63,9 @@ import com.hp.hpl.jena.shared.JenaException;
 import ros.*;
 import ros.communication.*;
 import ros.pkg.knowledge_server.srv.QuerySparQL;
-//import ros.pkg.knowledge_server.msg.*;
 
 import com.hp.hpl.jena.rdf.model.Statement;
 import org.srs.knowledge_server.ontology.*;
-//import ros.pkg.geometry_msgs.msg.Pose2D;
 
 import java.util.Properties;
 
@@ -134,7 +132,7 @@ public class KnowledgeServer
 	StringTokenizer st = new StringTokenizer(names, " ");
 	
 	while(st.hasMoreTokens()) {
-	    nameList.add(this.confPath + st.nextToken());
+	    nameList.add(this.confPath + "/" + st.nextToken());
 	}
 	for(String v: nameList) {
 	    System.out.println(v);
@@ -144,7 +142,7 @@ public class KnowledgeServer
     
     private void initProperties(String cfgFile) throws Exception
     {
-	InputStream is = new FileInputStream(this.confPath + cfgFile);
+	InputStream is = new FileInputStream(cfgFile);
 	this.config = new Properties();
 	this.config.load(is);
 
@@ -180,9 +178,12 @@ public class KnowledgeServer
 
     private String defaultContextPath()
     {
-	 this.confPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();	
+    /*
+	this.confPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();	
 	 this.confPath = this.confPath + "../conf/";
 	 return this.confPath;
+    */	 
+	return this.confPath;
     }
     
     public String getContextPath()
@@ -193,12 +194,13 @@ public class KnowledgeServer
     public static void main(String[] args)
     {
 	String configFile = new String();
-	String folderName = "";
+	//String Name = "";
 	String pkgName = "";
+	String pkgPath = "";
 
 	if(args.length == 2) {
 	    pkgName = args[0];
-	    folderName = args[1];
+	    configFile = args[1];
 	    String[] cmds = {"rospack", "find", pkgName};
 	    try{
 		Runtime rt = Runtime.getRuntime();
@@ -207,13 +209,13 @@ public class KnowledgeServer
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 
-		String pkgPath = br.readLine();
+		pkgPath = br.readLine();
 		if(pkgPath == null) {
 		    System.out.println("Package Path is Null. Check package name  ");
 		}
 		else {
-		    pkgPath = pkgPath + "/" + folderName;
-		    System.out.println("Load owl from: " + pkgPath);
+		    configFile = pkgPath + "/conf/" + configFile;
+		    System.out.println("Load from: " + configFile);
 		}
 	    }
 	    catch(Throwable t) {
@@ -221,13 +223,20 @@ public class KnowledgeServer
 	    }
 	}
 	else {
-	    System.out.println("rosrun knowledge_server pkg_name owl_folder_name");
+	    System.out.println("rosrun knowledge_server pkg_name config_file");
 	    System.exit(-1);
 	}
 
 	Properties conf = new Properties();
-	KnowledgeServer knowEng = new KnowledgeServer();
+	KnowledgeServer knowEng = new KnowledgeServer(pkgPath);
+
+	if (knowEng.init(configFile)) {
+	    System.out.println("OK");
 	
+	}
+	else {
+	    System.out.println("Something wrong with initialisation");
+	}	
     }
 
     private String nodeName;
