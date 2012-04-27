@@ -128,7 +128,7 @@ public class OntologyDB
     public String executeQuery(String queryString)
     {
 	//// new added for test JSON output
-	
+	try{
 	Query query = null; 
 	QueryExecution qe = null;
 	ResultSet results = null;
@@ -161,10 +161,16 @@ public class OntologyDB
 	}
 	qe.close();
 	return r;
+	}
+	catch(Exception e) {
+	    System.out.println(e.toString());
+	    return "";
+	}
     }
     
     public ArrayList<QuerySolution> executeQueryRaw(String queryString)
     {
+	try {
 	Query query = QueryFactory.create(queryString);
 	
 	QueryExecution qe = QueryExecutionFactory.create(query, model);
@@ -172,6 +178,12 @@ public class OntologyDB
 	ArrayList<QuerySolution> resList = (ArrayList)ResultSetFormatter.toList(results);
 	qe.close();
 	return resList; //results;
+	}
+	catch(Exception e) {
+	    System.out.println(e.toString());
+	    return  new ArrayList<QuerySolution>();
+	}
+
     }
 
     public boolean executeSparQLRule(String sparQLRule) {
