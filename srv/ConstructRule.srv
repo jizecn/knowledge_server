@@ -1,0 +1,6 @@
+# Use SparQL CONSTRUCT statement
+string constructRule
+
+---
+
+bool result

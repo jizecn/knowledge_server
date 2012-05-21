@@ -64,6 +64,7 @@ import ros.*;
 import ros.communication.*;
 import ros.pkg.knowledge_server.srv.QuerySparQL;
 import ros.pkg.knowledge_server.srv.SparQLRule;
+import ros.pkg.knowledge_server.srv.*;
 
 import com.hp.hpl.jena.rdf.model.Statement;
 import org.srs.knowledge_server.ontology.*;
@@ -178,7 +179,7 @@ public class KnowledgeServer
 	ServiceServer<QuerySparQL.Request, QuerySparQL.Response, QuerySparQL> srv = nodeHandle.advertiseService( querySparQLService , new QuerySparQL(), scb);
     }
 
-    private QuerySparQL.Response handleConstructSparQL(ConstructRule.Request req)
+    private ConstructRule.Response handleConstructSparQL(ConstructRule.Request req)
     {
 	ConstructRule.Response re = new ConstructRule.Response();
 	String queryString = req.constructRule;
@@ -191,13 +192,13 @@ public class KnowledgeServer
 
     private void initConstructSparQL() throws RosException
     {
-	ServiceServer.Callback<QuerySparQL.Request, QuerySparQL.Response> scb = new ServiceServer.Callback<QuerySparQL.Request, QuerySparQL.Response>() {
-            public QuerySparQL.Response call(QuerySparQL.Request request) {
-		return handleQuerySparQL(request);
+	ServiceServer.Callback<ConstructRule.Request, ConstructRule.Response> scb = new ServiceServer.Callback<ConstructRule.Request, ConstructRule.Response>() {
+            public ConstructRule.Response call(ConstructRule.Request request) {
+		return handleConstructSparQL(request);
             }
 	};
 
-	ServiceServer<QuerySparQL.Request, QuerySparQL.Response, QuerySparQL> srv = nodeHandle.advertiseService( querySparQLService , new QuerySparQL(), scb);
+	ServiceServer<ConstructRule.Request, ConstructRule.Response, ConstructRule> srv = nodeHandle.advertiseService( "construct_rule" , new ConstructRule(), scb);
     }
 
     private SparQLRule.Response handleSparQLRule(SparQLRule.Request req)
