@@ -129,43 +129,65 @@ public class OntologyDB
     {
 	//// new added for test JSON output
 	try{
+	    Query query = null; 
+	    QueryExecution qe = null;
+	    ResultSet results = null;
+	    
+	    try {
+		query = QueryFactory.create(queryString);
+		qe = QueryExecutionFactory.create(query, model);
+		results = qe.execSelect();
+	    }
+	    catch(Exception e) {
+		System.err.println("Query Syntax invalid. \nCaught Exception:  " + e.toString() + "  \n" + e.getMessage());
+		if(qe != null) {
+		    qe.close();
+		}
+		return  "";
+	    }
+	    if (results == null) {
+		qe.close();
+		return "";
+	    }
+	    ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+	    
+	    ResultSetFormatter.outputAsJSON(ostream, results);
+	    String r = new String(ostream.toByteArray(), "UTF-8");
+	    qe.close();
+	    return r;
+	}
+	catch(Exception e) {
+	    System.out.println(e.toString());
+	    return "";
+	}
+    }
+
+    public boolean executeConstructQuery(String queryString)
+    {
+	//// new added for test JSON output
 	Query query = null; 
 	QueryExecution qe = null;
-	ResultSet results = null;
-
+	//ResultSet results = null;
+	com.hp.hpl.jena.rdf.model.Model res = null;
 	try {
 	    query = QueryFactory.create(queryString);
 	    qe = QueryExecutionFactory.create(query, model);
-	    results = qe.execSelect();
+	    res = qe.execConstruct();
 	}
 	catch(Exception e) {
 	    System.err.println("Query Syntax invalid. \nCaught Exception:  " + e.toString() + "  \n" + e.getMessage());
 	    if(qe != null) {
 		qe.close();
 	    }
-	    return  "";
+	    return  false;
 	}
-	if (results == null) {
+	if (res == null) {
 	    qe.close();
-	    return "";
+	    return false;
 	}
-	ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-
-	ResultSetFormatter.outputAsJSON(ostream, results);
-	String r = "";
-	try{
-	    r = new String(ostream.toByteArray(), "UTF-8");
-	}
-	catch(Exception e){
-	    System.out.println(e.getMessage());
-	}
+	res.write(System.out, "TURTLE");	
 	qe.close();
-	return r;
-	}
-	catch(Exception e) {
-	    System.out.println(e.toString());
-	    return "";
-	}
+	return true;
     }
     
     public ArrayList<QuerySolution> executeQueryRaw(String queryString)

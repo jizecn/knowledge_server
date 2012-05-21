@@ -178,6 +178,28 @@ public class KnowledgeServer
 	ServiceServer<QuerySparQL.Request, QuerySparQL.Response, QuerySparQL> srv = nodeHandle.advertiseService( querySparQLService , new QuerySparQL(), scb);
     }
 
+    private QuerySparQL.Response handleConstructSparQL(ConstructRule.Request req)
+    {
+	ConstructRule.Response re = new ConstructRule.Response();
+	String queryString = req.constructRule;
+	System.out.println(queryString);
+
+	boolean res = ontoDB.executeConstructQuery(queryString);
+	re.result = res;
+	return re;
+    }
+
+    private void initConstructSparQL() throws RosException
+    {
+	ServiceServer.Callback<QuerySparQL.Request, QuerySparQL.Response> scb = new ServiceServer.Callback<QuerySparQL.Request, QuerySparQL.Response>() {
+            public QuerySparQL.Response call(QuerySparQL.Request request) {
+		return handleQuerySparQL(request);
+            }
+	};
+
+	ServiceServer<QuerySparQL.Request, QuerySparQL.Response, QuerySparQL> srv = nodeHandle.advertiseService( querySparQLService , new QuerySparQL(), scb);
+    }
+
     private SparQLRule.Response handleSparQLRule(SparQLRule.Request req)
     {
 	SparQLRule.Response re = new SparQLRule.Response();
