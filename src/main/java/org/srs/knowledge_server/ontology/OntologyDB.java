@@ -173,6 +173,7 @@ public class OntologyDB
 	    query = QueryFactory.create(queryString);
 	    qe = QueryExecutionFactory.create(query, model);
 	    res = qe.execConstruct();
+	    model.add(res);
 	}
 	catch(Exception e) {
 	    System.err.println("Query Syntax invalid. \nCaught Exception:  " + e.toString() + "  \n" + e.getMessage());

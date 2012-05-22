@@ -116,7 +116,7 @@ public class KnowledgeServer
 
 	try{
 	    this.initQuerySparQL();
-	    this.initSparQLRule();
+	    this.initConstructSparQL();
 	}
 	catch(RosException e){
 	    System.out.println(e.getMessage());
@@ -201,26 +201,6 @@ public class KnowledgeServer
 	ServiceServer<ConstructRule.Request, ConstructRule.Response, ConstructRule> srv = nodeHandle.advertiseService( "construct_rule" , new ConstructRule(), scb);
     }
 
-    private SparQLRule.Response handleSparQLRule(SparQLRule.Request req)
-    {
-	SparQLRule.Response re = new SparQLRule.Response();
-	String queryString = req.sparQLRule;
-	System.out.println(queryString);
-	re.result = ontoDB.executeSparQLRule(queryString);
-	return re;
-    }
-
-    private void initSparQLRule() throws RosException
-    {
-	ServiceServer.Callback<SparQLRule.Request, SparQLRule.Response> scb = new ServiceServer.Callback<SparQLRule.Request, SparQLRule.Response>() {
-            public SparQLRule.Response call(SparQLRule.Request request) {
-		return handleSparQLRule(request);
-            }
-	};
-
-	ServiceServer<SparQLRule.Request, SparQLRule.Response, SparQLRule> srv = nodeHandle.advertiseService( sparQLRuleService , new SparQLRule(), scb);
-    }
-
 
     private String defaultContextPath()
     {
@@ -228,7 +208,7 @@ public class KnowledgeServer
 	  this.confPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();	
 	  this.confPath = this.confPath + "../conf/";
 	  return this.confPath;
-	*/	 
+	*/
 	return this.confPath;
     }
     
